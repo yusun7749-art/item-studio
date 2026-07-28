@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Headquarters</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#11243a;--line:#203750;--text:#f4f7fb;--muted:#91a4b8;--cyan:#35d3c7;--blue:#5b8cff;--green:#35c77a;--yellow:#f4c85b;--red:#ff6b72;--purple:#a985ff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:radial-gradient(circle at 70% 0,#17304c 0,#07111f 38%);color:var(--text);min-height:100vh}.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}.side{border-right:1px solid var(--line);padding:24px 16px;background:rgba(6,16,29,.88);position:sticky;top:0;height:100vh}.brand{font-size:20px;font-weight:900;letter-spacing:.4px;padding:0 10px}.brand small{display:block;font-size:11px;color:var(--cyan);margin-top:6px;letter-spacing:1.7px}.nav{margin-top:28px;display:grid;gap:6px}.nav button{width:100%;border:0;background:transparent;color:var(--muted);padding:12px;text-align:left;border-radius:10px;font-weight:700;cursor:pointer}.nav button.active,.nav button:hover{background:var(--panel2);color:#fff}.side-foot{position:absolute;bottom:22px;left:16px;right:16px;border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--panel)}.online{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}main{padding:28px;max-width:1500px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.top h1{margin:0;font-size:28px}.top p{color:var(--muted);margin:7px 0 0}.clock{color:var(--muted);font-size:13px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(145deg,rgba(17,36,58,.95),rgba(10,26,43,.96));border:1px solid var(--line);border-radius:17px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.18)}.metric span{color:var(--muted);font-size:12px}.metric strong{display:block;font-size:25px;margin-top:9px}.metric em{font-size:11px;color:var(--green);font-style:normal}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:16px;margin-top:16px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section-title h2{font-size:17px;margin:0}.badge{padding:5px 9px;border-radius:999px;background:rgba(53,211,199,.12);color:var(--cyan);font-size:11px;font-weight:800}.mission textarea{width:100%;min-height:92px;border:1px solid var(--line);border-radius:13px;background:#071626;color:#fff;padding:14px;resize:vertical;font:inherit}.mission-actions{display:flex;gap:9px;margin-top:10px}.primary,.secondary{border:0;border-radius:11px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(90deg,var(--cyan),#66a6ff);color:#04131d}.secondary{background:#1a3048;color:#d8e4ef}.pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:17px}.step{border:1px solid var(--line);background:#0a1929;border-radius:11px;padding:10px 7px;text-align:center;font-size:11px;color:var(--muted);min-height:55px;display:flex;align-items:center;justify-content:center}.step.running{border-color:var(--cyan);color:#fff;box-shadow:0 0 18px rgba(53,211,199,.18)}.step.done{background:rgba(53,199,122,.13);color:#8ff0b7;border-color:#286f4a}.departments{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.dept{background:#0a1929;border:1px solid var(--line);border-radius:13px;padding:13px}.dept-top{display:flex;justify-content:space-between;align-items:center}.dept strong{font-size:13px}.dept p{font-size:11px;color:var(--muted);line-height:1.45;margin:8px 0}.status{font-size:10px;padding:4px 7px;border-radius:99px;background:rgba(53,199,122,.13);color:#83e9ad}.status.wait{background:rgba(244,200,91,.12);color:var(--yellow)}.jobs{display:grid;gap:9px}.job{padding:12px;border-radius:12px;background:#0a1929;border:1px solid var(--line)}.job-head{display:flex;justify-content:space-between;gap:10px;font-size:12px}.job p{font-size:11px;color:var(--muted);margin:7px 0}.bar{height:6px;border-radius:99px;background:#20344a;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));width:0;transition:width .5s}.log{max-height:270px;overflow:auto;display:grid;gap:8px}.log div{font-size:11px;line-height:1.45;border-left:2px solid var(--line);padding-left:9px;color:var(--muted)}.log b{color:#fff}.empty{color:var(--muted);font-size:12px;text-align:center;padding:28px 8px}.hidden{display:none}@media(max-width:1050px){.app{grid-template-columns:78px minmax(0,1fr)}.side{padding:20px 9px}.brand{font-size:0}.brand:before{content:'HQ';font-size:18px}.brand small,.nav button span,.side-foot{display:none}.nav button{text-align:center;padding:12px 4px}.metrics{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.departments{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){main{padding:18px 12px}.app{display:block}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);display:flex;align-items:center;overflow:auto}.nav{display:flex;margin:0 0 0 12px}.nav button{white-space:nowrap;padding:9px}.metrics{grid-template-columns:1fr 1fr}.departments{grid-template-columns:1fr}.pipeline{grid-template-columns:repeat(3,1fr)}.top{align-items:flex-start}.clock{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">AI Headquarters<small>COMPANY OPERATING SYSTEM</small></div>
+  <nav class="nav">
+    <button class="active">⌂ <span>CEO 대시보드</span></button>
+    <button>◈ <span>전략실</span></button>
+    <button>▣ <span>프로젝트</span></button>
+    <button>◎ <span>AI 직원</span></button>
+    <button>⚙ <span>Factory</span></button>
+    <button>✓ <span>QA · 감사실</span></button>
+    <button>↗ <span>Revenue</span></button>
+    <button>◌ <span>학습센터</span></button>
+  </nav>
+  <div class="side-foot"><div class="online"><i class="dot"></i> 본부 시스템 정상</div></div>
+</aside>
+<main>
+  <header class="top"><div><h1>CEO 대시보드</h1><p>목표를 입력하면 AI 직원들이 계획·제작·검수·배포까지 이어서 수행합니다.</p></div><div class="clock" id="clock"></div></header>
+  <section class="metrics">
+    <div class="card metric"><span>근무 중 AI 직원</span><strong id="workerCount">12</strong><em>전체 부서 정상</em></div>
+    <div class="card metric"><span>오늘 작업</span><strong id="todayJobs">0</strong><em id="jobChange">새 미션 대기</em></div>
+    <div class="card metric"><span>QA 통과율</span><strong id="qaRate">—</strong><em>자동 반려 루프 적용</em></div>
+    <div class="card metric"><span>활성 사업부</span><strong>2</strong><em>Savingio · ITEM Studio</em></div>
+  </section>
+  <section class="layout">
+    <div>
+      <div class="card mission">
+        <div class="section-title"><h2>대표 지시</h2><span class="badge">CEO → 전 부서</span></div>
+        <textarea id="mission" placeholder="예: 이번 주 판매 가능성이 높은 생활용품 3개를 찾아 쇼츠를 만들고 검수해 주세요."></textarea>
+        <div class="mission-actions"><button class="primary" id="startBtn">업무 시작</button><button class="secondary" id="sampleBtn">샘플 지시</button><button class="secondary" id="clearBtn">기록 초기화</button></div>
+        <div class="pipeline" id="pipeline">
+          <div class="step">CEO 계획</div><div class="step">시장조사</div><div class="step">상품기획</div><div class="step">콘텐츠 제작</div><div class="step">QA·감사</div><div class="step">승인 대기</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="section-title"><h2>AI 조직</h2><span class="badge">12 Employees</span></div>
+        <div class="departments" id="departments"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="section-title"><h2>실행 작업</h2><span class="badge" id="runState">대기</span></div>
+        <div class="jobs" id="jobs"><div class="empty">대표 지시를 입력하면 프로젝트가 생성됩니다.</div></div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="section-title"><h2>본부 활동 기록</h2><span class="badge">LIVE</span></div>
+        <div class="log" id="log"><div><b>시스템</b><br>AI Headquarters가 업무 지시를 기다리고 있습니다.</div></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+<script>
+const departments=[
+ ['CEO·PM','목표를 실행계획과 부서별 업무로 분해'],['시장조사팀','상품·수요·경쟁·계절성을 조사'],['상품기획팀','판매 구조와 제안 가치를 설계'],['카피팀','후킹·대본·제목·CTA 제작'],['디자인팀','썸네일·상세페이지·장면 설계'],['영상팀','쇼츠 장면·음성·영상 제작'],['홍보팀','채널별 게시물과 홍보 흐름 작성'],['고객팀','댓글·문의·FAQ 대응 초안'],['QA팀','품질 점수와 수정 반려 처리'],['감사실','저작권·과장광고·정책 위험 검사'],['데이터팀','조회·클릭·구매 지표 수집'],['학습팀','성과가 좋은 방식을 회사 표준으로 저장']
+];
+const deptBox=document.getElementById('departments');
+departments.forEach(([n,d],i)=>deptBox.insertAdjacentHTML('beforeend',`<div class="dept"><div class="dept-top"><strong>${n}</strong><span class="status ${i>7?'wait':''}">${i>7?'감시 중':'출근'}</span></div><p>${d}</p></div>`));
+const mission=document.getElementById('mission'),jobs=document.getElementById('jobs'),log=document.getElementById('log'),steps=[...document.querySelectorAll('.step')],runState=document.getElementById('runState');
+const saved=JSON.parse(localStorage.getItem('ai_hq_state')||'null');if(saved?.mission)mission.value=saved.mission;
+function now(){return new Date().toLocaleString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function addLog(title,text){log.insertAdjacentHTML('afterbegin',`<div><b>${now()} · ${title}</b><br>${text}</div>`)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function start(){const value=mission.value.trim();if(!value){mission.focus();return}document.getElementById('startBtn').disabled=true;runState.textContent='진행 중';jobs.innerHTML=`<div class="job"><div class="job-head"><b>MISSION-${Date.now().toString().slice(-6)}</b><span id="jobPct">0%</span></div><p>${value}</p><div class="bar"><span id="jobBar"></span></div></div>`;document.getElementById('todayJobs').textContent='1';document.getElementById('jobChange').textContent='실행 중';localStorage.setItem('ai_hq_state',JSON.stringify({mission:value,startedAt:new Date().toISOString()}));addLog('CEO','대표 지시를 프로젝트로 등록했습니다.');
+ const messages=[['CEO·PM','목표를 5개 실행 업무로 분해했습니다.'],['시장조사팀','시장 조사와 후보 수집을 시작했습니다.'],['상품기획팀','판매 구조와 콘텐츠 패키지를 설계했습니다.'],['제작본부','카피·디자인·영상 업무를 병렬로 시작했습니다.'],['QA·감사실','품질·저작권·정책 검사를 수행했습니다.'],['CEO','결과물을 대표 승인 대기함으로 전달했습니다.']];
+ for(let i=0;i<steps.length;i++){steps[i].classList.add('running');addLog(messages[i][0],messages[i][1]);const pct=Math.round(((i+.45)/steps.length)*100);document.getElementById('jobBar').style.width=pct+'%';document.getElementById('jobPct').textContent=pct+'%';await sleep(850);steps[i].classList.remove('running');steps[i].classList.add('done')}
+ document.getElementById('jobBar').style.width='100%';document.getElementById('jobPct').textContent='100%';runState.textContent='승인 대기';document.getElementById('qaRate').textContent='100%';document.getElementById('jobChange').textContent='1건 완료';document.getElementById('startBtn').disabled=false;addLog('시스템','첫 실행 루프가 완료되었습니다. 현재 버전은 운영 구조를 확인하는 HQ MVP이며 외부 계정 배포는 아직 실행하지 않습니다.');}
+document.getElementById('startBtn').onclick=start;document.getElementById('sampleBtn').onclick=()=>{mission.value='판매 가능성이 높은 생활용품 3개를 조사하고, ITEM Studio용 쇼츠 기획·대본·영상 프롬프트를 만든 뒤 QA 검수해 주세요.'};document.getElementById('clearBtn').onclick=()=>{localStorage.removeItem('ai_hq_state');mission.value='';jobs.innerHTML='<div class="empty">대표 지시를 입력하면 프로젝트가 생성됩니다.</div>';steps.forEach(s=>s.className='step');log.innerHTML='<div><b>시스템</b><br>기록을 초기화했습니다.</div>';document.getElementById('todayJobs').textContent='0';document.getElementById('qaRate').textContent='—';runState.textContent='대기'};
+setInterval(()=>document.getElementById('clock').textContent=new Date().toLocaleString('ko-KR',{dateStyle:'medium',timeStyle:'medium'}),1000);
+</script>
+</body>
+</html>
