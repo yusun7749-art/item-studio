@@ -32,10 +32,10 @@
     production:`제작 패키지\n- ITEM Studio 입력용 상품/주제 요약\n- 20초 쇼츠 장면 구성\n- 제목·설명·해시태그 초안\n- 제작 화면 연결 준비 완료`,
     qa:`QA 결과\n- 구조 검사: PASS\n- 과장 표현 검사: PASS\n- 저작권 위험 검사: PASS\n- 필수 정보 누락 검사: PASS\n- 대표 승인 권고: 승인 가능`
   }[stage]||'');
-  const createMission=async({title,division,priority,projectName})=>{
-    await brainReady;
+  const defaultDecision=({title,division,priority,projectName})=>({intent:'GENERAL',division,priority,projectName:projectName||division,revenue:{grade:'UNKNOWN',confidence:0},risk:'LOW',departments:PIPELINE.map(x=>x.id),summary:'Company Brain 준비 중이므로 기본 설정을 사용했습니다.',original:title});
+  const createMission=({title,division,priority,projectName})=>{
     const brain=window.HavenCompanyBrain;
-    const decision=brain?brain.analyze({title,division,priority,projectName}):{intent:'GENERAL',division,priority,projectName,revenue:{grade:'UNKNOWN',confidence:0},risk:'LOW',departments:PIPELINE.map(x=>x.id),summary:'Company Brain을 불러오지 못해 기본 설정을 사용했습니다.'};
+    const decision=brain?brain.analyze({title,division,priority,projectName}):defaultDecision({title,division,priority,projectName});
     const project=projectFor(decision.division||division,decision.projectName||projectName||division);
     const mission={id:uid('MISSION'),projectId:project.id,title,division:decision.division||division,priority:decision.priority||priority,status:'QUEUED',stageIndex:0,progress:0,executionMode:'PENDING',brain:decision,createdAt:now(),updatedAt:now()};
     state.missions.unshift(mission);
@@ -49,6 +49,7 @@
     const previous=tasks[task.order-1]?.output||'';
     task.status='RUNNING';task.updatedAt=now();save();log(task.employee,`${task.id} AI 실행을 시작했습니다.`,m.id);
     await Promise.all([connectorReady,brainReady]);
+    if(!m.brain&&window.HavenCompanyBrain){m.brain=window.HavenCompanyBrain.analyze({title:m.title,division:m.division,priority:m.priority,projectName:state.projects.find(p=>p.id===m.projectId)?.name});log('BRAIN',m.brain.summary,m.id)}
     window.HavenCompanyBrain?.markJob(m.id,'RUNNING');
     const connector=window.HavenAIConnector;
     const result=connector?await connector.execute({mission:m,task,previousOutput:previous}):{ok:false,error:'Connector unavailable'};
