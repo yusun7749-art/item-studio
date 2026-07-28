@@ -1,64 +1,40 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ITEM Studio V1</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ITEM Studio V1.1</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--text:#17191f;--muted:#6b7280;--line:#e5e7eb;--accent:#111827}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
-.wrap{max-width:1080px;margin:36px auto;padding:0 18px}.top{margin-bottom:18px}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin-top:7px}
+.wrap{max-width:1080px;margin:36px auto;padding:0 18px}.top{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:18px}h1{margin:0;font-size:30px}.sub{color:var(--muted);margin-top:7px}.version{font-size:12px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(17,24,39,.05)}
-label{font-size:13px;font-weight:700;display:block;margin:14px 0 7px}input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:15px;background:#fff}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{border:0;border-radius:12px;padding:13px 16px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#fff;width:100%;margin-top:15px}.secondary{background:#eef0f4;color:#222}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.status{font-size:13px;color:var(--muted);margin-top:10px}.ok{color:#087a43;font-weight:700}.hidden{display:none}.preview{aspect-ratio:9/16;background:linear-gradient(180deg,#101828,#34435f);border-radius:18px;color:white;padding:28px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.badge{font-size:12px;border:1px solid rgba(255,255,255,.35);display:inline-block;padding:6px 9px;border-radius:99px}.hook{font-size:31px;font-weight:900;line-height:1.2;margin-top:24px}.product{font-size:18px;line-height:1.45}.cta{background:white;color:#111827;padding:13px;border-radius:12px;font-weight:900;text-align:center}.out{margin-top:18px}.out h3{margin:18px 0 7px;font-size:16px}.box{background:#f8f9fb;border:1px solid var(--line);padding:13px;border-radius:12px;white-space:pre-wrap;line-height:1.55}.small{font-size:12px;color:var(--muted)}
-@media(max-width:820px){.grid{grid-template-columns:1fr}.preview{max-width:360px;margin:auto}}
+label{font-size:13px;font-weight:700;display:block;margin:14px 0 7px}input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:15px;background:#fff}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:0;border-radius:12px;padding:13px 16px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#fff;width:100%;margin-top:15px}.secondary{background:#eef0f4;color:#222}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.quick{margin-top:10px}
+.status{font-size:13px;color:var(--muted);margin-top:10px}.ok{color:#087a43;font-weight:700}.hidden{display:none}.preview{aspect-ratio:9/16;background:linear-gradient(180deg,#101828,#34435f);border-radius:18px;color:#fff;padding:28px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.badge{font-size:12px;border:1px solid rgba(255,255,255,.35);display:inline-block;padding:6px 9px;border-radius:99px}.hook{font-size:31px;font-weight:900;line-height:1.2;margin-top:24px}.product{font-size:18px;line-height:1.45}.cta{background:#fff;color:#111827;padding:13px;border-radius:12px;font-weight:900;text-align:center}.out{margin-top:18px}.out h3{margin:18px 0 7px;font-size:16px}.box{background:#f8f9fb;border:1px solid var(--line);padding:13px;border-radius:12px;white-space:pre-wrap;line-height:1.55}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.preview{max-width:360px;margin:auto}.top{align-items:start;flex-direction:column}}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <div class="top"><h1>ITEM Studio V1</h1><div class="sub">쿠팡 링크 → 쇼츠 대본·제목·설명·해시태그 생성 테스트</div></div>
-  <div class="grid">
-    <section class="card">
-      <label>쿠팡 파트너스 링크</label>
-      <input id="link" value="https://link.coupang.com/a/fKy46H5hCu">
-      <label>상품명</label>
-      <input id="name" placeholder="쿠팡 상품 페이지의 상품명을 붙여 넣으세요">
-      <div class="row">
-        <div><label>주요 장점 1</label><input id="p1" placeholder="예: 사용이 간단함"></div>
-        <div><label>주요 장점 2</label><input id="p2" placeholder="예: 공간을 적게 차지함"></div>
-      </div>
-      <label>대상 고객</label>
-      <select id="aud"><option>생활용품을 찾는 사람</option><option>육아·가정용품을 찾는 부모</option><option>자취생</option><option>차량용품을 찾는 운전자</option><option>선물용 상품을 찾는 사람</option></select>
-      <button class="primary" onclick="generate()">쇼츠 생성 테스트</button>
-      <div id="status" class="status">상품명을 입력한 뒤 버튼을 누르세요.</div>
-      <div id="results" class="out hidden">
-        <h3>20초 쇼츠 대본</h3><div id="script" class="box"></div>
-        <h3>추천 제목</h3><div id="titles" class="box"></div>
-        <h3>설명문</h3><div id="desc" class="box"></div>
-        <h3>해시태그</h3><div id="tags" class="box"></div>
-        <div class="actions"><button class="secondary" onclick="copyAll()">전체 결과 복사</button><button class="secondary" onclick="downloadTxt()">TXT 저장</button></div>
-      </div>
-    </section>
-    <aside class="card"><div class="preview"><div><span class="badge">오늘의 이뗌</span><div id="pvHook" class="hook">상품명을 넣고<br>생성해 보세요</div></div><div id="pvProduct" class="product">링크 하나로 쇼츠 구성안을 만듭니다.</div><div class="cta">상품 보러 가기 ↓</div></div></aside>
-  </div>
-</div>
+<body><div class="wrap">
+<div class="top"><div><h1>ITEM Studio V1.1</h1><div class="sub">쿠팡 링크 → 쇼츠 대본·제목·설명·해시태그·화면 시안</div></div><div class="version">GitHub Pages 실시간 테스트</div></div>
+<div class="grid">
+<section class="card">
+<label>쿠팡 파트너스 링크</label><input id="link" value="https://link.coupang.com/a/fKy46H5hCu">
+<label>상품명</label><input id="name" placeholder="쿠팡 상품 페이지의 상품명을 붙여 넣으세요">
+<div class="row"><div><label>주요 장점 1</label><input id="p1" placeholder="예: 사용이 간단함"></div><div><label>주요 장점 2</label><input id="p2" placeholder="예: 공간을 적게 차지함"></div></div>
+<label>대상 고객</label><select id="aud"><option>생활용품을 찾는 사람</option><option>육아·가정용품을 찾는 부모</option><option>자취생</option><option>차량용품을 찾는 운전자</option><option>선물용 상품을 찾는 사람</option></select>
+<div class="quick"><button class="secondary" onclick="sample()">샘플 자동 입력</button></div>
+<button class="primary" onclick="generate()">쇼츠 생성 테스트</button><div id="status" class="status">상품명을 입력하거나 샘플 자동 입력을 누르세요.</div>
+<div id="results" class="out hidden"><h3>20초 쇼츠 대본</h3><div id="script" class="box"></div><h3>추천 제목</h3><div id="titles" class="box"></div><h3>설명문</h3><div id="desc" class="box"></div><h3>해시태그</h3><div id="tags" class="box"></div><div class="actions"><button class="secondary" onclick="copyAll()">전체 결과 복사</button><button class="secondary" onclick="downloadTxt()">TXT 저장</button><button class="secondary" onclick="downloadPreview()">쇼츠 시안 PNG 저장</button></div></div>
+</section>
+<aside class="card"><div class="preview"><div><span class="badge">오늘의 이뗌</span><div id="pvHook" class="hook">상품명을 넣고<br>생성해 보세요</div></div><div id="pvProduct" class="product">링크 하나로 쇼츠 구성안을 만듭니다.</div><div class="cta">상품 보러 가기 ↓</div></div></aside>
+</div></div><canvas id="canvas" width="1080" height="1920" class="hidden"></canvas>
 <script>
-function clean(v,f){return (v||'').trim()||f}
-function generate(){
- const link=clean(document.getElementById('link').value,'');const name=clean(document.getElementById('name').value,'');
- if(!/^https:\/\/link\.coupang\.com\//.test(link)){document.getElementById('status').innerHTML='<span style="color:#b42318;font-weight:700">쿠팡 파트너스 링크 형식을 확인하세요.</span>';return}
- if(!name){document.getElementById('status').innerHTML='<span style="color:#b42318;font-weight:700">상품명을 입력해 주세요.</span>';return}
- const p1=clean(document.getElementById('p1').value,'사용이 간편하고');const p2=clean(document.getElementById('p2').value,'일상 활용도가 높습니다');const aud=document.getElementById('aud').value;
- const script=`[0~2초] 이거 아직도 모르셨나요?\n[2~6초] ${name}, ${p1}.\n[6~12초] 특히 ${aud}에게 잘 맞고, ${p2}.\n[12~17초] 불편했던 부분을 줄여주는 실용템입니다.\n[17~20초] 궁금하면 화면의 상품을 눌러 확인해 보세요.`;
- const titles=[`${name}, 왜 이제 알았지?`,`요즘 이거 찾는 사람이 많은 이유`,`${aud}이라면 한 번 볼 만한 아이템`,`써보면 바로 이해되는 생활템`,`불편함 줄여주는 오늘의 이뗌`].map((x,i)=>`${i+1}. ${x}`).join('\n');
- const desc=`${name}의 핵심 포인트를 20초 안에 정리했습니다.\n\n${p1}, ${p2}.\n\n상품 확인: ${link}\n\n※ 이 게시물은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.`;
- const tags='#쇼핑쇼츠 #쿠팡추천 #생활용품 #살림템 #가성비템 #추천템 #오늘의이뗌 #제품추천 #쇼핑정보 #쿠팡파트너스';
- document.getElementById('script').textContent=script;document.getElementById('titles').textContent=titles;document.getElementById('desc').textContent=desc;document.getElementById('tags').textContent=tags;document.getElementById('pvHook').innerHTML='이거 아직도<br>모르셨나요?';document.getElementById('pvProduct').textContent=name;document.getElementById('results').classList.remove('hidden');document.getElementById('status').innerHTML='<span class="ok">PASS ✅ 생성 완료</span>'
-}
-function allText(){return `대본\n${script.textContent}\n\n제목\n${titles.textContent}\n\n설명\n${desc.textContent}\n\n해시태그\n${tags.textContent}`}
+const $=id=>document.getElementById(id);function clean(v,f){return(v||'').trim()||f}
+function sample(){name.value='접이식 다용도 수납 카트';p1.value='필요할 때만 펼쳐 쓸 수 있고';p2.value='주방과 거실 어디서든 활용도가 높습니다';aud.value='생활용품을 찾는 사람';status.innerHTML='<span class="ok">샘플 입력 완료 — 생성 버튼을 누르세요.</span>'}
+function generate(){const l=clean(link.value,''),n=clean(name.value,'');if(!/^https:\/\/link\.coupang\.com\//.test(l)){status.innerHTML='<span style="color:#b42318;font-weight:700">쿠팡 파트너스 링크 형식을 확인하세요.</span>';return}if(!n){status.innerHTML='<span style="color:#b42318;font-weight:700">상품명을 입력해 주세요.</span>';return}const a=aud.value,x=clean(p1.value,'사용이 간편하고'),y=clean(p2.value,'일상 활용도가 높습니다');script.textContent=`[0~2초] 이거 아직도 모르셨나요?\n[2~6초] ${n}, ${x}.\n[6~12초] 특히 ${a}에게 잘 맞고, ${y}.\n[12~17초] 불편했던 부분을 줄여주는 실용템입니다.\n[17~20초] 궁금하면 화면의 상품을 눌러 확인해 보세요.`;titles.textContent=[`${n}, 왜 이제 알았지?`,`요즘 이거 찾는 사람이 많은 이유`,`${a}이라면 한 번 볼 만한 아이템`,`써보면 바로 이해되는 생활템`,`불편함 줄여주는 오늘의 이뗌`].map((v,i)=>`${i+1}. ${v}`).join('\n');desc.textContent=`${n}의 핵심 포인트를 20초 안에 정리했습니다.\n\n${x}, ${y}.\n\n상품 확인: ${l}\n\n※ 이 게시물은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.`;tags.textContent='#쇼핑쇼츠 #쿠팡추천 #생활용품 #살림템 #가성비템 #추천템 #오늘의이뗌 #제품추천 #쇼핑정보 #쿠팡파트너스';pvHook.innerHTML='이거 아직도<br>모르셨나요?';pvProduct.textContent=n;results.classList.remove('hidden');status.innerHTML='<span class="ok">PASS ✅ 생성 기능 정상 작동</span>'}
+function allText(){return`대본\n${script.textContent}\n\n제목\n${titles.textContent}\n\n설명\n${desc.textContent}\n\n해시태그\n${tags.textContent}`}
 async function copyAll(){await navigator.clipboard.writeText(allText());alert('전체 결과를 복사했습니다.')}
 function downloadTxt(){const b=new Blob([allText()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='item-studio-result.txt';a.click();URL.revokeObjectURL(a.href)}
-</script>
-</body>
-</html>
+function wrap(c,t,x,y,m,h){const w=t.split(' ');let l='',r=[];for(const v of w){const q=l+v+' ';if(c.measureText(q).width>m&&l){r.push(l);l=v+' '}else l=q}r.push(l);r.forEach((v,i)=>c.fillText(v.trim(),x,y+i*h));return y+r.length*h}
+function downloadPreview(){const n=clean(name.value,'오늘의 추천 상품'),c=canvas.getContext('2d'),g=c.createLinearGradient(0,0,0,1920);g.addColorStop(0,'#101828');g.addColorStop(1,'#34435f');c.fillStyle=g;c.fillRect(0,0,1080,1920);c.fillStyle='#fff';c.font='700 42px Arial';c.fillText('오늘의 이뗌',80,120);c.font='900 92px Arial';wrap(c,'이거 아직도 모르셨나요?',80,400,920,115);c.font='700 54px Arial';wrap(c,n,80,1120,920,72);c.fillStyle='#fff';c.fillRect(80,1660,920,120);c.fillStyle='#111827';c.font='900 46px Arial';c.textAlign='center';c.fillText('상품 보러 가기 ↓',540,1738);c.textAlign='left';const a=document.createElement('a');a.download='shorts-preview-1080x1920.png';a.href=canvas.toDataURL('image/png');a.click()}
+</script></body></html>
