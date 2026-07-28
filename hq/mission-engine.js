@@ -1,12 +1,13 @@
 (() => {
   'use strict';
-  const KEY='haven_ai_company_v5';
+  const KEY='haven_ai_company_v6';
   const loadScript=(src,ready)=>new Promise(resolve=>{
     if(ready()){resolve(true);return}
     const script=document.createElement('script');script.src=src;script.onload=()=>resolve(true);script.onerror=()=>resolve(false);document.head.appendChild(script);
   });
   const connectorReady=loadScript('ai-connector.js',()=>Boolean(window.HavenAIConnector));
   const brainReady=loadScript('company-brain.js',()=>Boolean(window.HavenCompanyBrain));
+  const employeeReady=loadScript('employee-engine.js',()=>Boolean(window.HavenEmployeeAI));
   const PIPELINE=[
     {id:'ceo',name:'CEO·PM',tool:'AI CEO Connector'},
     {id:'research',name:'시장조사팀',tool:'AI Research Connector'},
@@ -18,9 +19,9 @@
   const uid=p=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`.toUpperCase();
   const now=()=>new Date().toISOString();
   const safe=v=>String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
-  const seed=()=>({version:5,projects:[],missions:[],tasks:[],approvals:[],logs:[],settings:{autoAdvance:true,executionMode:'AUTO',brainEnabled:true}});
+  const seed=()=>({version:6,projects:[],missions:[],tasks:[],approvals:[],logs:[],settings:{autoAdvance:true,executionMode:'AUTO',brainEnabled:true,employeeEnabled:true}});
   let state;
-  try{state=Object.assign(seed(),JSON.parse(localStorage.getItem(KEY)||localStorage.getItem('haven_ai_company_v4')||localStorage.getItem('haven_ai_company_v3')||'{}'));state.version=5}catch{state=seed()}
+  try{state=Object.assign(seed(),JSON.parse(localStorage.getItem(KEY)||localStorage.getItem('haven_ai_company_v5')||localStorage.getItem('haven_ai_company_v4')||'{}'));state.version=6}catch{state=seed()}
   const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
   const log=(type,message,missionId='')=>{state.logs.unshift({id:uid('LOG'),type,message,missionId,at:now()});state.logs=state.logs.slice(0,300)};
   const projectFor=(division,name)=>{let p=state.projects.find(x=>x.division===division&&x.name===name);if(!p){p={id:uid('PRJ'),division,name,status:'ACTIVE',createdAt:now(),updatedAt:now()};state.projects.unshift(p);log('PROJECT',`${name} 프로젝트를 생성했습니다.`)}return p};
@@ -39,22 +40,22 @@
     const project=projectFor(decision.division||division,decision.projectName||projectName||division);
     const mission={id:uid('MISSION'),projectId:project.id,title,division:decision.division||division,priority:decision.priority||priority,status:'QUEUED',stageIndex:0,progress:0,executionMode:'PENDING',brain:decision,createdAt:now(),updatedAt:now()};
     state.missions.unshift(mission);
-    PIPELINE.forEach((s,i)=>state.tasks.push({id:uid('TASK'),missionId:mission.id,employeeId:s.id,employee:s.name,tool:s.tool,order:i,status:i===0?'INBOX':'WAITING',input:i===0?`${title}\n\n${decision.summary}`:'이전 부서 결과 대기',output:'',executionMode:'PENDING',provider:'',model:'',error:'',createdAt:now(),updatedAt:now()}));
-    brain?.enqueue(mission);
-    log('BRAIN',decision.summary,mission.id);
-    log('CEO',`대표 지시를 ${mission.id}로 등록했습니다.`,mission.id);
-    save();return mission
+    PIPELINE.forEach((s,i)=>state.tasks.push({id:uid('TASK'),missionId:mission.id,employeeId:s.id,employee:s.name,assignedEmployeeId:'',assignedEmployeeName:'',tool:s.tool,order:i,status:i===0?'INBOX':'WAITING',input:i===0?`${title}\n\n${decision.summary}`:'이전 부서 결과 대기',output:'',executionMode:'PENDING',provider:'',model:'',error:'',createdAt:now(),updatedAt:now()}));
+    brain?.enqueue(mission);log('BRAIN',decision.summary,mission.id);log('CEO',`대표 지시를 ${mission.id}로 등록했습니다.`,mission.id);save();return mission
   };
   async function executeTask(m,task,tasks){
     const previous=tasks[task.order-1]?.output||'';
-    task.status='RUNNING';task.updatedAt=now();save();log(task.employee,`${task.id} AI 실행을 시작했습니다.`,m.id);
-    await Promise.all([connectorReady,brainReady]);
+    task.status='RUNNING';task.updatedAt=now();save();
+    await Promise.all([connectorReady,brainReady,employeeReady]);
+    const assignment=window.HavenEmployeeAI?.assign(task,m);
+    if(assignment){task.assignedEmployeeId=assignment.employeeId;task.assignedEmployeeName=assignment.employeeName;log('EMPLOYEE',`${assignment.employeeName}에게 ${task.id}를 배정했습니다.`,m.id)}
+    log(task.employee,`${task.id} AI 실행을 시작했습니다.`,m.id);
     if(!m.brain&&window.HavenCompanyBrain){m.brain=window.HavenCompanyBrain.analyze({title:m.title,division:m.division,priority:m.priority,projectName:state.projects.find(p=>p.id===m.projectId)?.name});log('BRAIN',m.brain.summary,m.id)}
     window.HavenCompanyBrain?.markJob(m.id,'RUNNING');
     const connector=window.HavenAIConnector;
     const result=connector?await connector.execute({mission:m,task,previousOutput:previous}):{ok:false,error:'Connector unavailable'};
-    if(result.ok){task.output=result.output;task.executionMode='AI';task.provider=result.provider||'';task.model=result.model||'';task.error='';m.executionMode='AI';log(task.employee,`${task.id}를 ${task.provider}${task.model?' · '+task.model:''}로 완료했습니다.`,m.id)}
-    else{task.output=ruleOutput(task.employeeId,m);task.executionMode='RULE';task.error=result.error||'AI unavailable';if(m.executionMode!=='AI')m.executionMode='RULE';log('FALLBACK',`${task.employee} AI 호출 실패로 규칙 엔진을 사용했습니다: ${task.error}`,m.id)}
+    if(result.ok){task.output=result.output;task.executionMode='AI';task.provider=result.provider||'';task.model=result.model||'';task.error='';m.executionMode='AI';window.HavenEmployeeAI?.complete(task.id,{ok:true,quality:92,provider:task.provider,model:task.model,cost:result.usage?.cost||0});log(task.employee,`${task.id}를 ${task.provider}${task.model?' · '+task.model:''}로 완료했습니다.`,m.id)}
+    else{task.output=ruleOutput(task.employeeId,m);task.executionMode='RULE';task.error=result.error||'AI unavailable';if(m.executionMode!=='AI')m.executionMode='RULE';window.HavenEmployeeAI?.complete(task.id,{ok:true,quality:75,provider:'RULE',model:'Rule Engine',error:task.error});log('FALLBACK',`${task.employee} AI 호출 실패로 규칙 엔진을 사용했습니다: ${task.error}`,m.id)}
     task.status='DONE';task.updatedAt=now();
     const next=tasks[task.order+1];
     if(next){next.status='INBOX';next.input=task.output;next.updatedAt=now();m.stageIndex=next.order;m.status='RUNNING';m.progress=Math.round((task.order+1)/tasks.length*100);log(next.employee,`${m.id}가 Inbox에 도착했습니다.`,m.id)}
@@ -62,9 +63,9 @@
     m.updatedAt=now();save();return m;
   }
   const runAll=async(missionId,onStep)=>{let m=state.missions.find(x=>x.id===missionId);if(!m)return;while(!['APPROVAL','APPROVED','REJECTED'].includes(m.status)){const tasks=state.tasks.filter(x=>x.missionId===missionId).sort((a,b)=>a.order-b.order);const active=tasks.find(x=>x.status==='INBOX');if(!active)break;onStep?.(m,active);m=await executeTask(m,active,tasks);onStep?.(m,null);await new Promise(r=>setTimeout(r,120))}};
-  const decide=(approvalId,decision,note='')=>{const a=state.approvals.find(x=>x.id===approvalId);if(!a)return;const m=state.missions.find(x=>x.id===a.missionId);a.status=decision;a.note=note;a.decidedAt=now();if(decision==='APPROVED'){m.status='APPROVED';window.HavenCompanyBrain?.rememberOutcome({missionId:m.id,title:m.title,status:'APPROVED',score:100,note});log('CEO',`${m.id}를 승인했습니다.`,m.id)}else{m.status='REJECTED';window.HavenCompanyBrain?.rememberOutcome({missionId:m.id,title:m.title,status:'REJECTED',score:40,note});const qa=state.tasks.find(x=>x.missionId===m.id&&x.employeeId==='qa');if(qa){qa.status='INBOX';qa.input=`대표 수정 요청: ${note||'내용 보완 후 재검수'}`;qa.output='';qa.executionMode='PENDING'}m.stageIndex=5;m.progress=83;log('CEO',`${m.id}를 수정 요청으로 반려했습니다.`,m.id)}m.updatedAt=now();save()};
+  const decide=(approvalId,decision,note='')=>{const a=state.approvals.find(x=>x.id===approvalId);if(!a)return;const m=state.missions.find(x=>x.id===a.missionId);a.status=decision;a.note=note;a.decidedAt=now();if(decision==='APPROVED'){m.status='APPROVED';window.HavenCompanyBrain?.rememberOutcome({missionId:m.id,title:m.title,status:'APPROVED',score:100,note,division:m.division});log('CEO',`${m.id}를 승인했습니다.`,m.id)}else{m.status='REJECTED';window.HavenCompanyBrain?.rememberOutcome({missionId:m.id,title:m.title,status:'REJECTED',score:40,note,division:m.division});const qa=state.tasks.find(x=>x.missionId===m.id&&x.employeeId==='qa');if(qa){qa.status='INBOX';qa.input=`대표 수정 요청: ${note||'내용 보완 후 재검수'}`;qa.output='';qa.executionMode='PENDING'}m.stageIndex=5;m.progress=83;log('CEO',`${m.id}를 수정 요청으로 반려했습니다.`,m.id)}m.updatedAt=now();save()};
   const rerunRejected=async(missionId,onStep)=>{const m=state.missions.find(x=>x.id===missionId);if(!m||m.status!=='REJECTED')return;m.status='RUNNING';const old=state.approvals.find(a=>a.missionId===missionId&&a.status==='REJECTED');if(old)old.status='REVISION_RUNNING';save();await runAll(missionId,onStep)};
   const reset=()=>{state=seed();save()};
-  const exportData=()=>new Blob([JSON.stringify({company:state,brain:window.HavenCompanyBrain?.getMemory?.()||null,queue:window.HavenCompanyBrain?.getQueue?.()||null},null,2)],{type:'application/json'});
+  const exportData=()=>new Blob([JSON.stringify({company:state,brain:window.HavenCompanyBrain?.getMemory?.()||null,queue:window.HavenCompanyBrain?.getQueue?.()||null,employees:window.HavenEmployeeAI?.getState?.()||null},null,2)],{type:'application/json'});
   window.HavenEngine={PIPELINE,getState:()=>state,createMission,runAll,decide,rerunRejected,reset,save,exportData,safe};
 })();
