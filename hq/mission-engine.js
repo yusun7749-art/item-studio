@@ -1,6 +1,10 @@
 (() => {
   'use strict';
   const KEY='haven_ai_company_v4';
+  const connectorReady=new Promise(resolve=>{
+    if(window.HavenAIConnector){resolve(true);return}
+    const script=document.createElement('script');script.src='ai-connector.js';script.onload=()=>resolve(true);script.onerror=()=>resolve(false);document.head.appendChild(script);
+  });
   const PIPELINE=[
     {id:'ceo',name:'CEO·PM',tool:'AI CEO Connector'},
     {id:'research',name:'시장조사팀',tool:'AI Research Connector'},
@@ -30,6 +34,7 @@
   async function executeTask(m,task,tasks){
     const previous=tasks[task.order-1]?.output||'';
     task.status='RUNNING';task.updatedAt=now();save();log(task.employee,`${task.id} AI 실행을 시작했습니다.`,m.id);
+    await connectorReady;
     const connector=window.HavenAIConnector;
     const result=connector?await connector.execute({mission:m,task,previousOutput:previous}):{ok:false,error:'Connector unavailable'};
     if(result.ok){task.output=result.output;task.executionMode='AI';task.provider=result.provider||'';task.model=result.model||'';task.error='';m.executionMode='AI';log(task.employee,`${task.id}를 ${task.provider}${task.model?' · '+task.model:''}로 완료했습니다.`,m.id)}
